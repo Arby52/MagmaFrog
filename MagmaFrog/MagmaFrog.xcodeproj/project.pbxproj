@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		FDEBF53723899BF4003E3E05 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDEBF53623899BF4003E3E05 /* AppDelegate.swift */; };
 		FDEBF53923899BF4003E3E05 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = FDEBF53823899BF4003E3E05 /* GameScene.sks */; };
-		FDEBF53B23899BF4003E3E05 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = FDEBF53A23899BF4003E3E05 /* Actions.sks */; };
 		FDEBF53D23899BF4003E3E05 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDEBF53C23899BF4003E3E05 /* GameScene.swift */; };
 		FDEBF53F23899BF4003E3E05 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDEBF53E23899BF4003E3E05 /* GameViewController.swift */; };
 		FDEBF54223899BF4003E3E05 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FDEBF54023899BF4003E3E05 /* Main.storyboard */; };
@@ -21,7 +20,6 @@
 		FDEBF53323899BF4003E3E05 /* MagmaFrog.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MagmaFrog.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FDEBF53623899BF4003E3E05 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FDEBF53823899BF4003E3E05 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
-		FDEBF53A23899BF4003E3E05 /* Actions.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Actions.sks; sourceTree = "<group>"; };
 		FDEBF53C23899BF4003E3E05 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 		FDEBF53E23899BF4003E3E05 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		FDEBF54123899BF4003E3E05 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -62,7 +60,6 @@
 			children = (
 				FDEBF53623899BF4003E3E05 /* AppDelegate.swift */,
 				FDEBF53823899BF4003E3E05 /* GameScene.sks */,
-				FDEBF53A23899BF4003E3E05 /* Actions.sks */,
 				FDEBF53C23899BF4003E3E05 /* GameScene.swift */,
 				FDEBF53E23899BF4003E3E05 /* GameViewController.swift */,
 				FDEBF54023899BF4003E3E05 /* Main.storyboard */,
@@ -135,7 +132,6 @@
 				FDEBF53923899BF4003E3E05 /* GameScene.sks in Resources */,
 				FDEBF54423899BF7003E3E05 /* Assets.xcassets in Resources */,
 				FDEBF54723899BF7003E3E05 /* LaunchScreen.storyboard in Resources */,
-				FDEBF53B23899BF4003E3E05 /* Actions.sks in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -293,6 +289,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 3AL773BLC4;
 				INFOPLIST_FILE = MagmaFrog/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -301,7 +298,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = Ritson.MagmaFrog;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -310,6 +307,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 3AL773BLC4;
 				INFOPLIST_FILE = MagmaFrog/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -318,7 +316,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = Ritson.MagmaFrog;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
