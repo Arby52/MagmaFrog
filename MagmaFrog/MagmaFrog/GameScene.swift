@@ -105,8 +105,8 @@ class GameScene: SKScene {
     
     func SpawnStartingBG( currentBlocks: inout Int) ->Int{
         for _ in 0...2{
-            let bg = SKSpriteNode(imageNamed: "rockbg")
-            bg.name = "rockbg"
+            let bg = SKSpriteNode(imageNamed: "safebg")
+            bg.name = "spawnbg"
             bg.position.x = 0
             bg.zPosition = 0
             bg.position.y = CGFloat((frame.minY + 32) + CGFloat(currentBlocks*64))
@@ -120,8 +120,8 @@ class GameScene: SKScene {
     func SpawnSafeBG(currentBlocks: inout Int) -> Int{
         
         for _ in 0...2{
-            let bg = SKSpriteNode(imageNamed: "rockbg")
-            bg.name = "rockbg"
+            let bg = SKSpriteNode(imageNamed: "safebg")
+            bg.name = "safebg"
             bg.position.x = 0
             bg.zPosition = 0
             bg.position.y = CGFloat((frame.minY + 32) + CGFloat(currentBlocks*64))
@@ -183,6 +183,7 @@ class GameScene: SKScene {
         let boulderStartY = boulderStartY
         let boulderStartX = frame.maxX + CGFloat(xOffset)
         let boulder = BoulderNode(startPosition: CGPoint(x: CGFloat(boulderStartX), y: CGFloat( boulderStartY)), movSpeed: CGFloat(speed))
+        boulder.zPosition=1
         addChild(boulder)
     }
 }
