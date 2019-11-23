@@ -46,4 +46,32 @@ class GameScene: SKScene {
         player.physicsBody?.contactTestBitMask = CollisionType.rollingBoulder.rawValue | CollisionType.obstacleBoulder.rawValue //sends a message when collisions happen
         player.physicsBody?.isDynamic = false //remove gravity
     }
+    
+    override func update(_ currentTime: TimeInterval) {
+        for child in children{ //Destroy objets off screen
+            if child.frame.maxX < 0 {
+                if !frame.intersects(child.frame){
+                    child.removeFromParent()
+                }
+            }
+        }
+        
+        //change to a timer
+        var boulderSpawnTimer: Timer?
+        boulderSpawnTimer = Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(SpawnBoulder), userInfo: nil, repeats: true)
+        
+        //let activeBoulders = children.compactMap{$0 as? BoulderNode}
+        //if activeBoulders.isEmpty{
+        //    SpawnBoulder()
+       // }
+        
+    }
+    
+    @objc func SpawnBoulder(){
+        guard isPlayerAlive else {return }
+        
+        let boulderStartY = 0
+        let boulder = BoulderNode(startPosition: CGPoint(x:frame.maxX , y: CGFloat( boulderStartY)), movSpeed: 100)
+        addChild(boulder)
+    }
 }
