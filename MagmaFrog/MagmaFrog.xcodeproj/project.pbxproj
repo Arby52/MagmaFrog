@@ -14,6 +14,7 @@
 		FDEBF54223899BF4003E3E05 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FDEBF54023899BF4003E3E05 /* Main.storyboard */; };
 		FDEBF54423899BF7003E3E05 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FDEBF54323899BF7003E3E05 /* Assets.xcassets */; };
 		FDEBF54723899BF7003E3E05 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FDEBF54523899BF7003E3E05 /* LaunchScreen.storyboard */; };
+		FDEBF54F2389A808003E3E05 /* BoulderNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDEBF54E2389A808003E3E05 /* BoulderNode.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		FDEBF54323899BF7003E3E05 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FDEBF54623899BF7003E3E05 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		FDEBF54823899BF7003E3E05 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FDEBF54E2389A808003E3E05 /* BoulderNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoulderNode.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +63,7 @@
 				FDEBF53623899BF4003E3E05 /* AppDelegate.swift */,
 				FDEBF53823899BF4003E3E05 /* GameScene.sks */,
 				FDEBF53C23899BF4003E3E05 /* GameScene.swift */,
+				FDEBF54E2389A808003E3E05 /* BoulderNode.swift */,
 				FDEBF53E23899BF4003E3E05 /* GameViewController.swift */,
 				FDEBF54023899BF4003E3E05 /* Main.storyboard */,
 				FDEBF54323899BF7003E3E05 /* Assets.xcassets */,
@@ -145,6 +148,7 @@
 				FDEBF53D23899BF4003E3E05 /* GameScene.swift in Sources */,
 				FDEBF53F23899BF4003E3E05 /* GameViewController.swift in Sources */,
 				FDEBF53723899BF4003E3E05 /* AppDelegate.swift in Sources */,
+				FDEBF54F2389A808003E3E05 /* BoulderNode.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
