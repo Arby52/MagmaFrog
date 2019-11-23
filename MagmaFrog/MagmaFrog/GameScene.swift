@@ -48,42 +48,49 @@ class GameScene: SKScene {
         
         
         //spawn starting background
-        let currentBlocks: Int = 0
+        var currentBlocks: Int = 0
         let neededBlocks: Int = 21
-        let prevBg: BackgroundTypes
+        var prevBG: BackgroundTypes = BackgroundTypes.spawn
         
-        //starting area
-        for n in 0...2{
-            let bg = SKSpriteNode(imageNamed: "rockbg")
-            bg.name = "rockbg"
-            bg.position.x = 0
-            bg.zPosition = 0
-            bg.position.y = CGFloat((frame.minY + 32) + CGFloat(n*64))
-            addChild(bg)
-        }
+        //Spawn Starting Background
+        currentBlocks = SpawnStartingBG(currentBlocks: &currentBlocks)
         
-        while currentBlocks < neededBlocks{
-            let bgtype = Int.random(in: 1...3)
+        //Randomly spawn the rest of the backgrounds
+        while currentBlocks <= neededBlocks{
+            var bgtype: Int
+
+            //Make sure the same area dosent spawn twice
+            repeat {
+                bgtype = Int.random(in: 1...3)
+            } while prevBG.rawValue == bgtype
+   
             switch bgtype{
             case 1:
-                
+                //spawn safe
+                print("spawning safe")
+                currentBlocks = SpawnSafeBG(currentBlocks: &currentBlocks)
+                prevBG = BackgroundTypes.safe
                 break
                 
             case 2:
-                
+                //spawn magma
+                print("spawning magma")
+                currentBlocks = SpawnMagmaBG(currentBlocks: &currentBlocks)
+                prevBG = BackgroundTypes.magma
                 break
                 
             case 3:
+                //spawn boulder
+                print("spawning boulder")
+                currentBlocks = SpawnBoulderBG(currentBlocks: &currentBlocks)
+                prevBG = BackgroundTypes.boulder
+                break
                 
+            default:
                 break
             }
             
         }
-        
-        //boulder spawn timer
-        var boulderSpawnTimer: Timer?
-        boulderSpawnTimer = Timer.scheduledTimer(timeInterval: 2.5, target: self, selector: #selector(SpawnBoulder), userInfo: nil, repeats: true)
-              
     }
     
     override func update(_ currentTime: TimeInterval) {
@@ -96,11 +103,86 @@ class GameScene: SKScene {
         }
     }
     
-    @objc func SpawnBoulder(){
+    func SpawnStartingBG( currentBlocks: inout Int) ->Int{
+        for _ in 0...2{
+            let bg = SKSpriteNode(imageNamed: "rockbg")
+            bg.name = "rockbg"
+            bg.position.x = 0
+            bg.zPosition = 0
+            bg.position.y = CGFloat((frame.minY + 32) + CGFloat(currentBlocks*64))
+            addChild(bg)
+            currentBlocks+=1
+        }
+        
+        return currentBlocks
+    }
+    
+    func SpawnSafeBG(currentBlocks: inout Int) -> Int{
+        
+        for _ in 0...2{
+            let bg = SKSpriteNode(imageNamed: "rockbg")
+            bg.name = "rockbg"
+            bg.position.x = 0
+            bg.zPosition = 0
+            bg.position.y = CGFloat((frame.minY + 32) + CGFloat(currentBlocks*64))
+            addChild(bg)
+            currentBlocks+=1
+        }
+        
+        return currentBlocks
+    }
+    
+    func SpawnMagmaBG(currentBlocks: inout Int) -> Int{
+        
+        for _ in 0...2{
+            let bg = SKSpriteNode(imageNamed: "magmabg")
+            bg.name = "magmabg"
+            bg.position.x = 0
+            bg.zPosition = 0
+            bg.position.y = CGFloat((frame.minY + 32) + CGFloat(currentBlocks*64))
+            addChild(bg)
+            currentBlocks+=1
+        }
+        
+        return currentBlocks
+    }
+    
+    func SpawnBoulderBG(currentBlocks: inout Int) ->Int{
+        
+        for n in 0...2{
+            let bg = SKSpriteNode(imageNamed: "rockbg")
+            bg.name = "rockbg"
+            bg.position.x = 0
+            bg.zPosition = 0
+            bg.position.y = CGFloat((frame.minY + 32) + CGFloat(currentBlocks*64))
+            addChild(bg)
+            
+            print("timer")
+            print(n)
+            let xOffset = Int.random(in: 0 ... 500)
+            let timer = Double.random(in: 3 ... 5)
+            let speed = Int.random(in: 70 ... 150)
+            Timer.scheduledTimer(withTimeInterval: timer, repeats: true) {_ in
+                self.SpawnBoulder(boulderStartY: Int(bg.position.y), xOffset: xOffset, speed: speed)
+            }
+                            
+            currentBlocks+=1
+        }
+        
+        //boulder spawn timer
+        
+
+        
+        return currentBlocks
+    }
+    
+    
+    func SpawnBoulder(boulderStartY: Int, xOffset: Int, speed: Int){
         guard isPlayerAlive else {return }
         
-        let boulderStartY = 0
-        let boulder = BoulderNode(startPosition: CGPoint(x:frame.maxX , y: CGFloat( boulderStartY)), movSpeed: 100)
+        let boulderStartY = boulderStartY
+        let boulderStartX = frame.maxX + CGFloat(xOffset)
+        let boulder = BoulderNode(startPosition: CGPoint(x: CGFloat(boulderStartX), y: CGFloat( boulderStartY)), movSpeed: CGFloat(speed))
         addChild(boulder)
     }
 }
