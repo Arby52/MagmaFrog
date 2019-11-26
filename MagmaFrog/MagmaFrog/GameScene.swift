@@ -126,12 +126,20 @@ class GameScene: SKScene {
         switch(sender.direction){
         case .left:
             print ("Swipe Left")
-            player.position.x -= moveStep
+            if !(Int(floor(player.position.x)) < -310){
+                player.position.x -= moveStep
+            }
+            print(Int(floor(player.position.x)))
+            print(" ")
+            print(player.position.x)
             break
             
         case .right:
             print("Swipe Right")
-            player.position.x += moveStep
+            if !(Int(floor(player.position.x)) > 310){
+                player.position.x += moveStep
+            }
+            print(player.position.x)
             break
             
         case .up:
@@ -141,7 +149,10 @@ class GameScene: SKScene {
             
         case .down:
             print("Swipe Down")
-            player.position.y -= moveStep
+            if !(Int(floor(player.position.y)) < -615){
+                player.position.y -= moveStep
+            }
+            print(player.position.y)
             break
             
         default:
