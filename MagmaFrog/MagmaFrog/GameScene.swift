@@ -32,7 +32,26 @@ class GameScene: SKScene {
     
     let bpositions = Array(stride(from: -384, to: 384, by: 128))
     
+    let moveStep: CGFloat = 64
+    
     override func didMove(to view: SKView) {
+        
+        isUserInteractionEnabled = true
+        
+        let upSwipe = UISwipeGestureRecognizer(target: self, action: #selector(swipeHandler(_:)))
+        let downSwipe = UISwipeGestureRecognizer(target: self, action: #selector(swipeHandler(_:)))
+        let leftSwipe = UISwipeGestureRecognizer(target: self, action: #selector(swipeHandler(_:)))
+        let rightSwipe = UISwipeGestureRecognizer(target: self, action: #selector(swipeHandler(_:)))
+        
+        upSwipe.direction = .up
+        downSwipe.direction = .down
+        leftSwipe.direction = .left
+        rightSwipe.direction = .right
+        
+        view.addGestureRecognizer(upSwipe)
+        view.addGestureRecognizer(downSwipe)
+        view.addGestureRecognizer(leftSwipe)
+        view.addGestureRecognizer(rightSwipe)
         
         player.name = "player"
         player.position.x = 0  //frame.minX to get left side
@@ -50,7 +69,7 @@ class GameScene: SKScene {
         //spawn starting background
         var currentBlocks: Int = 0
         let neededBlocks: Int = 21
-        var prevBG: BackgroundTypes = BackgroundTypes.spawn
+        var prevBG: BackgroundTypes = BackgroundTypes.safe
         
         //Spawn Starting Background
         currentBlocks = SpawnStartingBG(currentBlocks: &currentBlocks)
@@ -100,6 +119,33 @@ class GameScene: SKScene {
                     child.removeFromParent()
                 }
             }
+        }
+    }
+    
+    @objc func swipeHandler(_ sender : UISwipeGestureRecognizer){
+        switch(sender.direction){
+        case .left:
+            print ("Swipe Left")
+            player.position.x -= moveStep
+            break
+            
+        case .right:
+            print("Swipe Right")
+            player.position.x += moveStep
+            break
+            
+        case .up:
+            print("Swipe Up")
+            player.position.y += moveStep
+            break
+            
+        case .down:
+            print("Swipe Down")
+            player.position.y -= moveStep
+            break
+            
+        default:
+            break
         }
     }
     
