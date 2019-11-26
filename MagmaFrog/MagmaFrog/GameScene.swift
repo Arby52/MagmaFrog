@@ -34,6 +34,11 @@ class GameScene: SKScene {
     
     let moveStep: CGFloat = 64
     
+    //spawn starting background
+    var currentBlocks: Int = 0
+    let neededBlocks: Int = 24
+    var prevBG: BackgroundTypes = BackgroundTypes.safe
+    
     override func didMove(to view: SKView) {
         
         isUserInteractionEnabled = true
@@ -65,53 +70,13 @@ class GameScene: SKScene {
         player.physicsBody?.contactTestBitMask = CollisionType.rollingBoulder.rawValue | CollisionType.obstacleBoulder.rawValue //sends a message when collisions happen
         player.physicsBody?.isDynamic = false //remove gravity
         
-        
-        //spawn starting background
-        var currentBlocks: Int = 0
-        let neededBlocks: Int = 21
-        var prevBG: BackgroundTypes = BackgroundTypes.safe
-        
         //Spawn Starting Background
         currentBlocks = SpawnStartingBG(currentBlocks: &currentBlocks)
+        SpawnBackgrounds(currentBlocks: &currentBlocks)
         
-        //Randomly spawn the rest of the backgrounds
-        while currentBlocks <= neededBlocks{
-            var bgtype: Int
-
-            //Make sure the same area dosent spawn twice
-            repeat {
-                bgtype = Int.random(in: 1...3)
-            } while prevBG.rawValue == bgtype
-   
-            switch bgtype{
-            case 1:
-                //spawn safe
-                print("spawning safe")
-                currentBlocks = SpawnSafeBG(currentBlocks: &currentBlocks)
-                prevBG = BackgroundTypes.safe
-                break
-                
-            case 2:
-                //spawn magma
-                print("spawning magma")
-                currentBlocks = SpawnMagmaBG(currentBlocks: &currentBlocks)
-                prevBG = BackgroundTypes.magma
-                break
-                
-            case 3:
-                //spawn boulder
-                print("spawning boulder")
-                currentBlocks = SpawnBoulderBG(currentBlocks: &currentBlocks)
-                prevBG = BackgroundTypes.boulder
-                break
-                
-            default:
-                break
-            }
-            
-        }
     }
     
+    //Update and Input functions
     override func update(_ currentTime: TimeInterval) {
         for child in children{ //Destroy objets off screen
             if child.frame.maxX < 0 {
@@ -124,27 +89,36 @@ class GameScene: SKScene {
     
     @objc func swipeHandler(_ sender : UISwipeGestureRecognizer){
         switch(sender.direction){
+            
+        case .up:
+            player.position.y += moveStep
+            
+            if player.position.y > 0{
+                //Move EVERY NODE down by movestep
+                for child in children{
+                    child.position.y -= moveStep
+                }
+            }
+            
+            currentBlocks -= 1
+            
+            if currentBlocks < neededBlocks{
+                currentBlocks = SpawnBackgrounds(currentBlocks: &currentBlocks)
+            }
+        
+            break
+            
         case .left:
-            print ("Swipe Left")
+            //If not at boundary, move frog
             if !(Int(floor(player.position.x)) < -310){
                 player.position.x -= moveStep
             }
-            print(Int(floor(player.position.x)))
-            print(" ")
-            print(player.position.x)
             break
             
         case .right:
-            print("Swipe Right")
             if !(Int(floor(player.position.x)) > 310){
                 player.position.x += moveStep
             }
-            print(player.position.x)
-            break
-            
-        case .up:
-            print("Swipe Up")
-            player.position.y += moveStep
             break
             
         case .down:
@@ -152,13 +126,58 @@ class GameScene: SKScene {
             if !(Int(floor(player.position.y)) < -615){
                 player.position.y -= moveStep
             }
-            print(player.position.y)
+
             break
             
         default:
             break
         }
     }
+    
+    
+    //Background spawning functions
+    func SpawnBackgrounds(currentBlocks: inout Int) ->Int{
+        //Randomly spawn the needed backgrounds
+             while currentBlocks <= neededBlocks{
+                 var bgtype: Int
+
+                 //Make sure the same area dosent spawn twice
+                 repeat {
+                     bgtype = Int.random(in: 1...3)
+                 } while prevBG.rawValue == bgtype
+        
+                 switch bgtype{
+                 case 1:
+                     //spawn safe
+                     print("spawning safe")
+                     currentBlocks = SpawnSafeBG(currentBlocks: &currentBlocks)
+                     prevBG = BackgroundTypes.safe
+                     break
+                     
+                 case 2:
+                     //spawn magma
+                     print("spawning magma")
+                     currentBlocks = SpawnMagmaBG(currentBlocks: &currentBlocks)
+                     prevBG = BackgroundTypes.magma
+                     break
+                     
+                 case 3:
+                     //spawn boulder
+                     print("spawning boulder")
+                     currentBlocks = SpawnBoulderBG(currentBlocks: &currentBlocks)
+                     prevBG = BackgroundTypes.boulder
+                     break
+                     
+                 default:
+                     break
+                 }
+                
+                
+                 
+             }
+        return currentBlocks
+    }
+    
     
     func SpawnStartingBG( currentBlocks: inout Int) ->Int{
         for _ in 0...2{
@@ -175,8 +194,8 @@ class GameScene: SKScene {
     }
     
     func SpawnSafeBG(currentBlocks: inout Int) -> Int{
-        
-        for _ in 0...2{
+        let blockAmount = Int.random(in: 2...4)
+        for _ in 1...blockAmount{
             let bg = SKSpriteNode(imageNamed: "safebg")
             bg.name = "safebg"
             bg.position.x = 0
@@ -190,8 +209,8 @@ class GameScene: SKScene {
     }
     
     func SpawnMagmaBG(currentBlocks: inout Int) -> Int{
-        
-        for _ in 0...2{
+        let blockAmount = Int.random(in: 2...4)
+        for _ in 1...blockAmount{
             let bg = SKSpriteNode(imageNamed: "magmabg")
             bg.name = "magmabg"
             bg.position.x = 0
@@ -205,8 +224,8 @@ class GameScene: SKScene {
     }
     
     func SpawnBoulderBG(currentBlocks: inout Int) ->Int{
-        
-        for n in 0...2{
+        let blockAmount = Int.random(in: 2...4)
+        for _ in 1...blockAmount{
             let bg = SKSpriteNode(imageNamed: "rockbg")
             bg.name = "rockbg"
             bg.position.x = 0
@@ -214,8 +233,6 @@ class GameScene: SKScene {
             bg.position.y = CGFloat((frame.minY + 32) + CGFloat(currentBlocks*64))
             addChild(bg)
             
-            print("timer")
-            print(n)
             let xOffset = Int.random(in: 0 ... 500)
             let timer = Double.random(in: 3 ... 5)
             let speed = Int.random(in: 70 ... 150)
@@ -225,10 +242,6 @@ class GameScene: SKScene {
                             
             currentBlocks+=1
         }
-        
-        //boulder spawn timer
-        
-
         
         return currentBlocks
     }
@@ -240,7 +253,7 @@ class GameScene: SKScene {
         let boulderStartY = boulderStartY
         let boulderStartX = frame.maxX + CGFloat(xOffset)
         let boulder = BoulderNode(startPosition: CGPoint(x: CGFloat(boulderStartX), y: CGFloat( boulderStartY)), movSpeed: CGFloat(speed))
-        boulder.zPosition=1
+        boulder.zPosition=2 //Above player
         addChild(boulder)
     }
 }
