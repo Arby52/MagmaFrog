@@ -17,13 +17,12 @@ class BoulderNode: SKSpriteNode {
         let texture = SKTexture(imageNamed: "boulder")
         super.init(texture: texture, color: .white, size: CGSize(width: 64, height: 64))
         
-        physicsBody = SKPhysicsBody(circleOfRadius: CGFloat(32))
+        physicsBody = SKPhysicsBody(circleOfRadius: CGFloat(30))
         physicsBody?.categoryBitMask = CollisionType.rollingBoulder.rawValue
-        physicsBody?.collisionBitMask = CollisionType.player.rawValue
+        //physicsBody?.collisionBitMask = CollisionType.player.rawValue
         physicsBody?.contactTestBitMask = CollisionType.player.rawValue
         name = "rollingBoulder"
         position = CGPoint(x: startPosition.x, y:startPosition.y)
-        physicsBody?.isDynamic = false //remove gravity
     
         configureMovement()
     }
