@@ -10,11 +10,10 @@ import SpriteKit
 
 //Types of collisions in the game
 enum CollisionType: UInt32{
-    case player = 1 //The Frog
-    case playerWeapon = 2 //Frog Tonuge
-    case rollingBoulder = 4 //Rolling Boulders
-    case magma = 8 //Magma
-    case obstacleBoulder = 16 //Stationary Obstacle Boulders
+    case player = 0 //The Frog
+    case boulder = 1 //Rolling Boulders
+    case magma = 2 //Magma
+    case magmaFloat = 4
 }
 
 enum BackgroundTypes : Int{
@@ -24,13 +23,22 @@ enum BackgroundTypes : Int{
     case boulder = 3
 }
 
-class GameScene: SKScene, SKPhysicsContactDelegate {
+enum Direction: Int{
+    case left = 0
+    case right = 1
+}
+
+
+
+
+class GameScene: SKScene{
     
     //Create player and variables
-    let player = SKSpriteNode(imageNamed: "frog")
     let moveStep: CGFloat = 64
+    var onPlatform:Bool = false
     var isPlayerAlive = true
     var score = 0
+    let player = Player()
     
     //spawn starting background
     let bpositions = Array(stride(from: -384, to: 384, by: 128))
@@ -59,17 +67,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         view.addGestureRecognizer(leftSwipe)
         view.addGestureRecognizer(rightSwipe)
         
-        player.name = "player"
-        player.position.x = 0  //frame.minX to get left side
-        player.zPosition = 1
-        player.position.y = frame.minY + 96
+        player.position = CGPoint(x: 0, y: frame.minY+96)
         addChild(player)
-        
-        player.physicsBody = SKPhysicsBody(circleOfRadius: 30)
-        player.physicsBody?.categoryBitMask = CollisionType.player.rawValue //set the collision type to the enum value
-        //player.physicsBody?.collisionBitMask = CollisionType.rollingBoulder.rawValue | CollisionType.obstacleBoulder.rawValue //What can the player collide with? The | adds the two values from the enum together
-        player.physicsBody?.contactTestBitMask = CollisionType.rollingBoulder.rawValue | CollisionType.obstacleBoulder.rawValue | CollisionType.magma.rawValue //sends a message when collisions happen
-        //player.physicsBody?.isDynamic = false //remove gravity
         
         //Spawn Starting Background
         currentBlocks = SpawnStartingBG(currentBlocks: &currentBlocks)
@@ -79,6 +78,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     //Update and Input functions
     override func update(_ currentTime: TimeInterval) {
+        /* ////////uhhhh, make it so they have to come on screen once before can be deleted :] mayB with boolean
         for child in children{ //Destroy objets off screen
             if child.frame.maxX < 0 {
                 if !frame.intersects(child.frame){
@@ -86,6 +86,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 }
             }
         }
+         */
     }
     
     @objc func swipeHandler(_ sender : UISwipeGestureRecognizer){
@@ -135,35 +136,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     
-    //Collision Functions
-    func didBegin(_ contact: SKPhysicsContact) {
-        
-        guard let nodeA = contact.bodyA.node else {return}
-        guard let nodeB = contact.bodyB.node else {return}
-        
-        print("Collision")
-        
-        //Player Colliding
-        if nodeA.name == "player" || nodeB.name == "player"{
-            collisionBetween(obj1: nodeA, obj2: nodeB)
-        }
-    }
-    
-    func collisionBetween(obj1: SKNode, obj2: SKNode){
-        //With Boulder
-        if obj1.name == "player" && obj2.name == "rollingBoulder"{
-            destroy(object: obj1)
-            isPlayerAlive = false
-        }
-        if(obj1.name == "player" && obj2.name == "magmabg"){
-            destroy(object: obj1)
-            isPlayerAlive = false
-        }
-        if(obj1.name == "magmabg" && obj2.name == "player"){
-            destroy(object: obj2)
-            isPlayerAlive = false
-        }
-    }
+   
     
     func destroy(object: SKNode){
         object.removeFromParent()
@@ -254,6 +227,40 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             bg.physicsBody?.isDynamic = false
             
             addChild(bg)
+            
+            let xOffset = Int.random(in: 0 ... 250)
+            let timer = Double.random(in: 2.5 ... 4)
+            let speed = 100
+            let dval = Int.random(in: 0...1)
+            var direction:Direction
+            if(dval == 0){
+                direction = Direction.left
+                var fillSpawnPoint = (frame.maxX + CGFloat(xOffset))
+                repeat{
+                    let magmaFloat = MagmaFloat(startPosition: CGPoint(x: CGFloat(fillSpawnPoint), y: CGFloat( bg.position.y)), movSpeed: CGFloat(speed), direction: direction)
+
+                   addChild(magmaFloat)
+                   fillSpawnPoint -= (CGFloat(timer) * CGFloat(speed))
+                } while fillSpawnPoint >= frame.minX
+            }
+            else{
+                direction = Direction.right
+                var fillSpawnPoint = (frame.minX - CGFloat(xOffset))
+                repeat{
+                    let magmaFloat = MagmaFloat(startPosition: CGPoint(x: CGFloat(fillSpawnPoint), y: CGFloat( bg.position.y)), movSpeed: CGFloat(speed), direction: direction)
+
+                   addChild(magmaFloat)
+                   fillSpawnPoint += (CGFloat(timer) * CGFloat(speed))
+                } while fillSpawnPoint <= frame.maxX
+            }
+
+            //spawn magmaFloats in on the screen so they're in place on spawn
+
+            //Spawn on timer
+            Timer.scheduledTimer(withTimeInterval: timer, repeats: true) {_ in
+                self.SpawnMagmaFloat(floatStartY: Int(bg.position.y), xOffset: xOffset, speed: speed, direction: direction)
+            }
+            
             currentBlocks+=1
         }
         
@@ -278,7 +285,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             var fillSpawnPoint = (frame.maxX + CGFloat(xOffset))
             repeat{
                 let boulder = BoulderNode(startPosition: CGPoint(x: CGFloat(fillSpawnPoint), y: CGFloat( bg.position.y)), movSpeed: CGFloat(speed))
-                boulder.zPosition = 2
                 addChild(boulder)
                 fillSpawnPoint -= (CGFloat(timer) * CGFloat(speed))
             } while fillSpawnPoint >= frame.minX
@@ -294,14 +300,90 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         return currentBlocks
     }
     
+    func SpawnMagmaFloat(floatStartY: Int, xOffset: Int, speed: Int, direction: Direction){
+        
+        let floatStartY = floatStartY
+        var floatStartX: CGFloat
+        if(direction == Direction.left){
+            floatStartX = frame.maxX + CGFloat(xOffset)
+        } else {
+            floatStartX = frame.minX - CGFloat(xOffset)
+        }
+        let magmaFloat = MagmaFloat(startPosition: CGPoint(x:floatStartX, y:CGFloat(floatStartY)), movSpeed: CGFloat(speed), direction: direction)
+        addChild(magmaFloat)
+    }
     
     func SpawnBoulder(boulderStartY: Int, xOffset: Int, speed: Int){
-        guard isPlayerAlive else {return }
         
         let boulderStartY = boulderStartY
         let boulderStartX = frame.maxX + CGFloat(xOffset)
         let boulder = BoulderNode(startPosition: CGPoint(x: CGFloat(boulderStartX), y: CGFloat( boulderStartY)), movSpeed: CGFloat(speed))
-        boulder.zPosition=2 //Above player
         addChild(boulder)
     }
+}
+
+extension GameScene: SKPhysicsContactDelegate{
+    //Collision Functions
+        func didBegin(_ contact: SKPhysicsContact) {
+           
+           guard let nodeA = contact.bodyA.node else {return}
+           guard let nodeB = contact.bodyB.node else {return}
+           
+           print("Collision")
+           
+           //Player Colliding
+           if nodeA.name == "mfloat" || nodeB.name == "mfloat"{
+               collisionBetween(obj1: nodeA, obj2: nodeB)
+           }
+           
+           if nodeA.name == "player" || nodeB.name == "player"{
+               collisionBetween(obj1: nodeA, obj2: nodeB)
+           }
+        }
+        
+        func collisionBetween(obj1: SKNode, obj2: SKNode){
+           //With Boulder
+           if (obj1.name == "player" && obj2.name == "boulder"){
+               destroy(object: obj1)
+               isPlayerAlive = false
+           }
+           
+           //player and mfloat
+           if (obj1.name == "player" && obj2.name == "mfloat"){
+               onPlatform = true
+           }
+           if (obj1.name == "mfloat" && obj2.name == "player"){
+               onPlatform = true
+           }
+           
+           //player and lava
+           if(!onPlatform){
+               if(obj1.name == "player" && obj2.name == "magmabg"){
+                   destroy(object: obj1)
+                   isPlayerAlive = false
+               }
+               if(obj1.name == "magmabg" && obj2.name == "player"){
+                   destroy(object: obj2)
+                   isPlayerAlive = false
+               }
+           }
+        }
+    
+    func didEnd(_ contact: SKPhysicsContact) {
+            guard let nodeA = contact.bodyA.node else {return}
+            guard let nodeB = contact.bodyB.node else {return}
+            
+            if nodeA.name == "player" || nodeB.name == "player"{
+                endedCollision(obj1: nodeA, obj2: nodeB)
+            }
+        }
+    
+        func endedCollision(obj1: SKNode, obj2: SKNode){
+            if (obj1.name == "player" && obj2.name == "mfloat"){
+                onPlatform = false
+            }
+            if (obj1.name == "mfloat" && obj2.name == "player"){
+                onPlatform = false
+            }
+        }
 }
