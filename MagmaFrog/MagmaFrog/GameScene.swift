@@ -68,7 +68,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         player.physicsBody = SKPhysicsBody(circleOfRadius: 30)
         player.physicsBody?.categoryBitMask = CollisionType.player.rawValue //set the collision type to the enum value
         //player.physicsBody?.collisionBitMask = CollisionType.rollingBoulder.rawValue | CollisionType.obstacleBoulder.rawValue //What can the player collide with? The | adds the two values from the enum together
-        player.physicsBody?.contactTestBitMask = CollisionType.rollingBoulder.rawValue | CollisionType.obstacleBoulder.rawValue //sends a message when collisions happen
+        player.physicsBody?.contactTestBitMask = CollisionType.rollingBoulder.rawValue | CollisionType.obstacleBoulder.rawValue | CollisionType.magma.rawValue //sends a message when collisions happen
         //player.physicsBody?.isDynamic = false //remove gravity
         
         //Spawn Starting Background
@@ -144,7 +144,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         print("Collision")
         
         //Player Colliding
-        if nodeA.name == "player"{
+        if nodeA.name == "player" || nodeB.name == "player"{
             collisionBetween(obj1: nodeA, obj2: nodeB)
         }
     }
@@ -153,6 +153,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //With Boulder
         if obj1.name == "player" && obj2.name == "rollingBoulder"{
             destroy(object: obj1)
+            isPlayerAlive = false
+        }
+        if(obj1.name == "player" && obj2.name == "magmabg"){
+            destroy(object: obj1)
+            isPlayerAlive = false
+        }
+        if(obj1.name == "magmabg" && obj2.name == "player"){
+            destroy(object: obj2)
             isPlayerAlive = false
         }
     }
@@ -217,7 +225,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func SpawnSafeBG(currentBlocks: inout Int) -> Int{
-        let blockAmount = Int.random(in: 2...4)
+        let blockAmount = Int.random(in: 2...2)
         for _ in 1...blockAmount{
             let bg = SKSpriteNode(imageNamed: "safebg")
             bg.name = "safebg"
@@ -239,6 +247,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             bg.position.x = 0
             bg.zPosition = 0
             bg.position.y = CGFloat((frame.minY + 32) + CGFloat(currentBlocks*64))
+            
+            bg.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 750, height: 64))
+            bg.physicsBody?.categoryBitMask = CollisionType.magma.rawValue
+            bg.physicsBody?.contactTestBitMask = CollisionType.player.rawValue
+            bg.physicsBody?.isDynamic = false
+            
             addChild(bg)
             currentBlocks+=1
         }

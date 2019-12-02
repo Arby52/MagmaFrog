@@ -21,6 +21,7 @@ class BoulderNode: SKSpriteNode {
         physicsBody?.categoryBitMask = CollisionType.rollingBoulder.rawValue
         //physicsBody?.collisionBitMask = CollisionType.player.rawValue
         physicsBody?.contactTestBitMask = CollisionType.player.rawValue
+        physicsBody?.isDynamic = false
         name = "rollingBoulder"
         position = CGPoint(x: startPosition.x, y:startPosition.y)
     
