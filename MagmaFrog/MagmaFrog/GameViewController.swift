@@ -9,11 +9,19 @@
 import UIKit
 import SpriteKit
 import GameplayKit
+import CoreMotion
 
 class GameViewController: UIViewController {
 
+    var motionManager: CMMotionManager!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.becomeFirstResponder()
+        
+        //Initializing Core Motion
+        motionManager = CMMotionManager()
+        motionManager.startAccelerometerUpdates()
         
         if let view = self.view as! SKView? {
             // Load the SKScene from 'GameScene.sks'
@@ -31,6 +39,14 @@ class GameViewController: UIViewController {
             view.showsNodeCount = true
             view.showsPhysics = true
         }
+    }
+    
+    override func becomeFirstResponder() -> Bool {
+        return true
+    }
+    
+    override func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+        print("device shook")
     }
 
     override var shouldAutorotate: Bool {

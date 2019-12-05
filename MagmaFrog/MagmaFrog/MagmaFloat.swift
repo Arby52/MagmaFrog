@@ -16,14 +16,14 @@ class MagmaFloat: SKSpriteNode {
         self.movSpeed = movSpeed
         
         let texture = SKTexture(imageNamed: "magmafloat")
-        super.init(texture: texture, color: .white, size: CGSize(width: 56, height: 128)) //I have no idea why i need to do this, but i do
+        super.init(texture: texture, color: .white, size: CGSize(width: 56, height: 128)) //I have no idea why i need to do switch the width and height, but i do
             
-        physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 64, height: 128))
+        physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 60, height: 128))
         physicsBody?.categoryBitMask = CollisionType.magmaFloat.rawValue //set the collision type to the enum value
         physicsBody?.contactTestBitMask = CollisionType.player.rawValue
         physicsBody?.collisionBitMask = 0
-        physicsBody?.isDynamic = false
-        name = "mfloat"
+        physicsBody?.isDynamic = true
+        name = "magmafloat"
         position = CGPoint(x: startPosition.x, y:startPosition.y)
         zPosition = 1
 

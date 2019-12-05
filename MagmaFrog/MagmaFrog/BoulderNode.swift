@@ -20,7 +20,8 @@ class BoulderNode: SKSpriteNode {
         physicsBody = SKPhysicsBody(circleOfRadius: CGFloat(30))
         physicsBody?.categoryBitMask = CollisionType.boulder.rawValue
         physicsBody?.contactTestBitMask = CollisionType.player.rawValue
-        physicsBody?.isDynamic = false
+        physicsBody?.collisionBitMask = 0
+        physicsBody?.isDynamic = true
         name = "boulder"
         position = CGPoint(x: startPosition.x, y:startPosition.y)
         zPosition = 3
