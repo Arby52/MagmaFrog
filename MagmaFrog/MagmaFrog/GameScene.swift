@@ -144,14 +144,15 @@ class GameScene: SKScene{
     func HandleShaking(){
         
     }
-    
+        
     //Update and Input functions
     override func update(_ currentTime: TimeInterval) {
         if(onPlatform && currentPlatform != nil){
             player.position.x = (currentPlatform?.position.x)!
         }
         
-        if(onLava && !onPlatform){
+        
+        if(onLava && !onPlatform && (currentPlatform == nil)){
             player.removeFromParent()
             isPlayerAlive = false
         }
@@ -411,13 +412,13 @@ class GameScene: SKScene{
     
     func OnLava(){
         onLava = true
-        print("on magma")
+         print("magma \(onLava)")
     }
-    func OffFloat(){
-        if(currentPlatform == nil){
-            onPlatform = false
-            print("off float")
-        }
+    
+    func OnPlatform(Obj: SKNode){
+        onPlatform = true
+        currentPlatform = Obj
+        print("platform \(onPlatform)")
     }
 }
 
@@ -449,9 +450,9 @@ extension GameScene: SKPhysicsContactDelegate{
 
         //player and mfloat
         if (Obj.name == "magmafloat"){
-            print("on float")
-            onPlatform = true
-            currentPlatform = Obj
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.03){
+                self.OnPlatform(Obj: Obj)
+            }
         }
 
         //player and lava
@@ -478,13 +479,13 @@ extension GameScene: SKPhysicsContactDelegate{
     func endedCollision(Player: SKNode, Obj: SKNode){
         if(Obj.name == "magmabg"){
             onLava = false
-            print("off magma")
+            print("magma \(onLava)")
         }
+        
         if (Obj.name == "magmafloat"){
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05){
-                self.OffFloat()
-            }
+            onPlatform = false
             currentPlatform = nil
+            print("platform \(onPlatform)")
         }
     }
     
