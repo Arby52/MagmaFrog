@@ -22,7 +22,7 @@ class MagmaFloat: SKSpriteNode {
         physicsBody?.categoryBitMask = CollisionType.magmaFloat.rawValue //set the collision type to the enum value
         physicsBody?.contactTestBitMask = CollisionType.player.rawValue
         physicsBody?.collisionBitMask = 0
-        physicsBody?.isDynamic = true
+        physicsBody?.isDynamic = false
         name = "magmafloat"
         position = CGPoint(x: startPosition.x, y:startPosition.y)
         zPosition = 1

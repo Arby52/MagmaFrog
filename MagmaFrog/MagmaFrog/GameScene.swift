@@ -38,12 +38,27 @@ class GameScene: SKScene{
     var onLava:Bool = false
     var floatDirection: Direction = Direction.left
     var isPlayerAlive = true
+    var currentPlatform:SKNode? = nil
     let player = Player()
+    
+    var shockwaveBool = false
+
+    
+    //Motion Manager
+    let motionManager = CMMotionManager()
+    
     
     var scoreLabel: SKLabelNode!
     var score = 0{
         didSet{
             scoreLabel.text = "Score: \(score)"
+        }
+    }
+    
+    var shockwaveLabel: SKLabelNode!
+    var remainingShockwaves = 3{
+        didSet{
+            shockwaveLabel.text = "Shockwaves: \(remainingShockwaves)"
         }
     }
     
@@ -78,6 +93,27 @@ class GameScene: SKScene{
         view.addGestureRecognizer(leftSwipe)
         view.addGestureRecognizer(rightSwipe)
         
+        //Motion Manager
+        if motionManager.isDeviceMotionAvailable {
+            motionManager.deviceMotionUpdateInterval = 0.016
+            motionManager.startDeviceMotionUpdates(to: .main) {
+                [weak self] (data, error) in
+                
+                guard let data = data, error == nil else{
+                    return
+                }
+                if (data.userAcceleration.z < -2.5 && self!.remainingShockwaves > 0 && !(self!.shockwaveBool)){
+                    self!.Shockwave()
+                    self!.shockwaveBool = true
+                }
+                if(data.userAcceleration.z > -2 && self!.shockwaveBool){
+                    self!.shockwaveBool = false
+                }
+            }
+        }
+        
+        
+        
         //Spawn Objects
         player.position = CGPoint(x: 0, y: frame.minY+96)
         addChild(player)
@@ -94,22 +130,33 @@ class GameScene: SKScene{
         scoreLabel.fontSize = 40
         scoreLabel.zPosition = 10
         addChild(scoreLabel)
+        
+        //Shockwave aligning
+        shockwaveLabel = SKLabelNode(fontNamed: "ArialRoundedMTBold")
+        shockwaveLabel.text = "Shockwaves: 3"
+        shockwaveLabel.horizontalAlignmentMode = .right
+        shockwaveLabel.position = CGPoint(x:frame.maxX - 50, y:frame.maxY - 50)
+        shockwaveLabel.fontSize = 40
+        shockwaveLabel.zPosition = 10
+        addChild(shockwaveLabel)
     }
-  
-    override func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
-        print("shook")
-    }
-    
+      
     func HandleShaking(){
         
     }
     
     //Update and Input functions
     override func update(_ currentTime: TimeInterval) {
+        if(onPlatform && currentPlatform != nil){
+            player.position.x = (currentPlatform?.position.x)!
+        }
+        
         if(onLava && !onPlatform){
             player.removeFromParent()
             isPlayerAlive = false
         }
+        
+        
         /* ////////uhhhh, make it so they have to come on screen once before can be deleted :] mayB with boolean
         for child in children{ //Destroy objets off screen
             if child.frame.maxX < 0 {
@@ -133,9 +180,9 @@ class GameScene: SKScene{
                                 child.position.y -= moveStep
                             }
                             scoreLabel.position.y += moveStep
+                            shockwaveLabel.position.y += moveStep
                             currentBlocks -= 1
                             score += 1
-                            print(score)
                         }
                         
                         if currentBlocks < neededBlocks{
@@ -168,6 +215,15 @@ class GameScene: SKScene{
                         break
             }
         }
+    }
+    
+    func Shockwave(){
+        for child in children{
+            if child.name == "boulder"{
+                child.removeFromParent()
+            }
+        }
+        remainingShockwaves -= 1
     }
     
     //Background spawning functions
@@ -352,6 +408,17 @@ class GameScene: SKScene{
         let boulder = BoulderNode(startPosition: CGPoint(x: CGFloat(boulderStartX), y: CGFloat( boulderStartY)), movSpeed: CGFloat(speed))
         addChild(boulder)
     }
+    
+    func OnLava(){
+        onLava = true
+        print("on magma")
+    }
+    func OffFloat(){
+        if(currentPlatform == nil){
+            onPlatform = false
+            print("off float")
+        }
+    }
 }
 
 
@@ -365,7 +432,7 @@ extension GameScene: SKPhysicsContactDelegate{
         guard let nodeB = contact.bodyB.node else {return}
         
         if nodeA.name == "player"{
-        collisionBetween(Player: nodeA, Obj: nodeB)
+            collisionBetween(Player: nodeA, Obj: nodeB)
         }
         if nodeB.name == "player"{
             collisionBetween(Player: nodeB, Obj: nodeA)
@@ -382,14 +449,16 @@ extension GameScene: SKPhysicsContactDelegate{
 
         //player and mfloat
         if (Obj.name == "magmafloat"){
-           print("on float")
-           onPlatform = true
+            print("on float")
+            onPlatform = true
+            currentPlatform = Obj
         }
 
         //player and lava
         if(Obj.name == "magmabg"){
-            print("on magma")
-            onLava = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05){
+                self.OnLava()
+            }
         }
     }
     
@@ -408,12 +477,14 @@ extension GameScene: SKPhysicsContactDelegate{
 
     func endedCollision(Player: SKNode, Obj: SKNode){
         if(Obj.name == "magmabg"){
-            print("off magma")
             onLava = false
+            print("off magma")
         }
         if (Obj.name == "magmafloat"){
-            print("off float")
-            onPlatform = false
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05){
+                self.OffFloat()
+            }
+            currentPlatform = nil
         }
     }
     
