@@ -23,6 +23,7 @@ class MagmaFloat: SKSpriteNode {
         physicsBody?.contactTestBitMask = CollisionType.player.rawValue
         physicsBody?.collisionBitMask = 0
         physicsBody?.isDynamic = false
+        physicsBody?.usesPreciseCollisionDetection = true
         name = "magmafloat"
         position = CGPoint(x: startPosition.x, y:startPosition.y)
         zPosition = 1

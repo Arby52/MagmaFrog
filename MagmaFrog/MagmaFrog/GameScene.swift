@@ -15,6 +15,7 @@ enum CollisionType: UInt32{
     case boulder = 1 //Rolling Boulders
     case magmaFloat = 2//MagmaFloat
     case magma = 4 //Magma
+    case pickup = 8 //Shockwave Pickup
 }
 
 enum BackgroundTypes : Int{
@@ -157,7 +158,6 @@ class GameScene: SKScene{
             isPlayerAlive = false
         }
         
-        
         /* ////////uhhhh, make it so they have to come on screen once before can be deleted :] mayB with boolean
         for child in children{ //Destroy objets off screen
             if child.frame.maxX < 0 {
@@ -291,6 +291,7 @@ class GameScene: SKScene{
             bg.zPosition = 0
             bg.position.y = CGFloat((frame.minY + 32) + CGFloat(currentBlocks*64))
             addChild(bg)
+            SpawnPickup(yPos: Int(bg.position.y))
             currentBlocks+=1
         }
         
@@ -313,6 +314,7 @@ class GameScene: SKScene{
             
             addChild(bg)
             
+            SpawnPickup(yPos: Int(bg.position.y))
             
             //Spawning Magma Floats
             let xOffset = Int.random(in: 0 ... 250)
@@ -366,6 +368,8 @@ class GameScene: SKScene{
             bg.position.y = CGFloat((frame.minY + 32) + CGFloat(currentBlocks*64))
             addChild(bg)
             
+            SpawnPickup(yPos: Int(bg.position.y))
+            
             let xOffset = Int.random(in: 0 ... 500)
             let timer = Double.random(in: 3 ... 5)
             let speed = Int.random(in: 70 ... 150)
@@ -387,6 +391,17 @@ class GameScene: SKScene{
         }
         
         return currentBlocks
+    }
+    
+    func SpawnPickup(yPos: Int){
+        let rand = Int.random(in: 0 ... 25) //1 in 25 chance for a pickup every block
+        if(rand == 0){
+            let possibleXPoints = Array(stride(from: -320, to: 320, by: 64)) //possible x spawn points
+            let xRand = Int.random(in: 0 ... 9) //random x position
+            let xPos = possibleXPoints[xRand] //randomly choose a point from the array
+            let pickup = Pickup(startPosition: CGPoint(x: xPos, y: yPos))
+            addChild(pickup)
+        }
     }
     
     func SpawnMagmaFloat(floatStartY: Int, xOffset: Int, speed: Int, direction: Direction){
@@ -460,6 +475,13 @@ extension GameScene: SKPhysicsContactDelegate{
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.05){
                 self.OnLava()
             }
+        }
+        
+        //Player and Shockwave Pickup
+        if(Obj.name == "pickup"){
+            print("pickup collide")
+            remainingShockwaves += 1
+            destroy(object: Obj)
         }
     }
     
