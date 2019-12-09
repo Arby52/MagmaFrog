@@ -82,13 +82,9 @@ class GameScene: SKScene{
     let neededBlocks: Int = 24
     var prevBG: BackgroundTypes = BackgroundTypes.safe
     
-
-    
-    
     override func didMove(to view: SKView) {
         self.physicsWorld.contactDelegate = self
         self.physicsWorld.gravity = CGVector(dx: 0,dy: 0) //Disable gravity
-        
         
         isUserInteractionEnabled = true
                 
@@ -119,10 +115,11 @@ class GameScene: SKScene{
                 }
                 if (data.userAcceleration.z < -2 && self!.remainingShockwaves > 0 && !(self!.shockwaveBool)){
                     self!.Shockwave()
-                    self!.shockwaveBool = true
+                    self!.shockwaveBool = true //Bool used to make sure only the first value is used
                 }
+            
                 if(data.userAcceleration.z > -1.5 && self!.shockwaveBool){
-                    self!.shockwaveBool = false
+                    self!.shockwaveBool = false //Bool reset once userAcceleration normailsies again
                 }
             }
         }
@@ -253,7 +250,6 @@ class GameScene: SKScene{
             }
             
             view.ignoresSiblingOrder = true
-
         }
     }
     
@@ -366,7 +362,7 @@ class GameScene: SKScene{
             let timer = Double.random(in: 2.5 ... 4)
             let speed = Int.random(in: 65 ... 200)
 
-            //spawn magmaFloats in on the screen so they're in place on spawn
+            //spawn magmaFloats in on the screen so they're in place on spawn. Randomise direction.
             if(floatDirection == Direction.left){
                 var fillSpawnPoint = (frame.maxX + CGFloat(xOffset))
                 repeat{
@@ -427,8 +423,6 @@ class GameScene: SKScene{
             }
             
             //spawn boulders in on the screen so they're in place on spawn
-            
-            
             if(floatDirection == Direction.left){
                 var fillSpawnPoint = (frame.maxX + CGFloat(xOffset))
                 repeat{
@@ -445,10 +439,7 @@ class GameScene: SKScene{
                    fillSpawnPoint += (CGFloat(timer) * CGFloat(speed))
                 } while fillSpawnPoint <= frame.maxX
             }
-            
-            
-            
-            
+             
             //Spawn on timer
             Timer.scheduledTimer(withTimeInterval: timer, repeats: true) {timer in
                 if (self.invalidateTimers){
@@ -510,13 +501,10 @@ class GameScene: SKScene{
         onPlatform = true
         currentPlatform = Obj
     }
-    
-    
 }
 
 
 //Collisions
-//I dont know how to force magmafloat to always go before magma, since they "overlap" at the same time
 extension GameScene: SKPhysicsContactDelegate{
     //Collision Functions
     //On Enter
@@ -542,6 +530,7 @@ extension GameScene: SKPhysicsContactDelegate{
 
         //player and mfloat
         if (Obj.name == "magmafloat"){
+            //Delay on entering platform so the player can leave the previous one first. This needs to go before entering lava.
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.03){
                 self.OnPlatform(Obj: Obj)
             }
@@ -549,6 +538,7 @@ extension GameScene: SKPhysicsContactDelegate{
 
         //player and lava
         if(Obj.name == "magmabg"){
+            //Delay entering lava so the player can enter a new float first.
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.05){
                 self.OnLava()
             }
