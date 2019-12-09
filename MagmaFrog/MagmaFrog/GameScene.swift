@@ -8,7 +8,6 @@
 
 import SpriteKit
 import CoreMotion
-import AVFoundation
 import AudioToolbox
 
 //Types of collisions in the game
@@ -46,9 +45,6 @@ class GameScene: SKScene{
     
     var shockwaveBool = false
     var invalidateTimers = false
-
-    //Sounds
-    var jumpSoundEffect: AVAudioPlayer? = nil
     
     //Motion Manager
     let motionManager = CMMotionManager()
@@ -130,7 +126,7 @@ class GameScene: SKScene{
                 }
             }
         }
-        
+                
         SpawnEverything()
     }
         
@@ -175,18 +171,6 @@ class GameScene: SKScene{
                             shockwaveLabel.position.y += moveStep
                             currentBlocks -= 1
                             score += 1
-                            
-                            //load sounds
-                            let path = Bundle.main.path(forResource: "jump.mp3", ofType: nil)!
-                            let url = URL(fileURLWithPath: path)
-                            do{
-                                jumpSoundEffect = try AVAudioPlayer(contentsOf: url)
-                                jumpSoundEffect?.play()
-                            } catch {
-                                print("couldnt load sound file")
-                            }
-                            
-                            
                         }
                         
                         if currentBlocks < neededBlocks{
