@@ -49,6 +49,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		FD208498239ECAB900D7A773 /* New Group */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "New Group";
+			sourceTree = "<group>";
+		};
 		FDEBF52A23899BF4003E3E05 = {
 			isa = PBXGroup;
 			children = (
@@ -68,6 +75,7 @@
 		FDEBF53523899BF4003E3E05 /* MagmaFrog */ = {
 			isa = PBXGroup;
 			children = (
+				FD208498239ECAB900D7A773 /* New Group */,
 				FDEBF53623899BF4003E3E05 /* AppDelegate.swift */,
 				FDEBF53823899BF4003E3E05 /* GameScene.sks */,
 				FDEBF53C23899BF4003E3E05 /* GameScene.swift */,
