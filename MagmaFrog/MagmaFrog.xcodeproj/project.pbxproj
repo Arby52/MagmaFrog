@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		FD20849A239ECB2600D7A773 /* jump.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = FD208499239ECB2600D7A773 /* jump.mp3 */; };
+		FD2084A0239ED3D200D7A773 /* Background.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD20849F239ED3D200D7A773 /* Background.swift */; };
 		FD3B644F239ABF16001240CB /* Pickup.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3B644E239ABF16001240CB /* Pickup.swift */; };
 		FD42D458239EAD8F0063E35D /* ResetButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD42D457239EAD8F0063E35D /* ResetButton.swift */; };
 		FD4BF45E239555B60055DF61 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD4BF45D239555B60055DF61 /* Player.swift */; };
@@ -23,7 +23,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		FD208499239ECB2600D7A773 /* jump.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = jump.mp3; sourceTree = "<group>"; };
+		FD20849F239ED3D200D7A773 /* Background.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Background.swift; sourceTree = "<group>"; };
 		FD3B644E239ABF16001240CB /* Pickup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pickup.swift; sourceTree = "<group>"; };
 		FD42D457239EAD8F0063E35D /* ResetButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetButton.swift; sourceTree = "<group>"; };
 		FD4BF45D239555B60055DF61 /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
@@ -51,14 +51,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		FD208498239ECAB900D7A773 /* Sounds */ = {
-			isa = PBXGroup;
-			children = (
-				FD208499239ECB2600D7A773 /* jump.mp3 */,
-			);
-			path = Sounds;
-			sourceTree = "<group>";
-		};
 		FDEBF52A23899BF4003E3E05 = {
 			isa = PBXGroup;
 			children = (
@@ -78,11 +70,11 @@
 		FDEBF53523899BF4003E3E05 /* MagmaFrog */ = {
 			isa = PBXGroup;
 			children = (
-				FD208498239ECAB900D7A773 /* Sounds */,
 				FDEBF53623899BF4003E3E05 /* AppDelegate.swift */,
 				FDEBF53823899BF4003E3E05 /* GameScene.sks */,
 				FDEBF53C23899BF4003E3E05 /* GameScene.swift */,
 				FD42D457239EAD8F0063E35D /* ResetButton.swift */,
+				FD20849F239ED3D200D7A773 /* Background.swift */,
 				FD3B644E239ABF16001240CB /* Pickup.swift */,
 				FD4BF45F239558D50055DF61 /* MagmaFloat.swift */,
 				FDEBF54E2389A808003E3E05 /* BoulderNode.swift */,
@@ -155,7 +147,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				FDEBF54223899BF4003E3E05 /* Main.storyboard in Resources */,
-				FD20849A239ECB2600D7A773 /* jump.mp3 in Resources */,
 				FDEBF53923899BF4003E3E05 /* GameScene.sks in Resources */,
 				FDEBF54423899BF7003E3E05 /* Assets.xcassets in Resources */,
 				FDEBF54723899BF7003E3E05 /* LaunchScreen.storyboard in Resources */,
@@ -174,6 +165,7 @@
 				FD4BF460239558D50055DF61 /* MagmaFloat.swift in Sources */,
 				FD42D458239EAD8F0063E35D /* ResetButton.swift in Sources */,
 				FDEBF53723899BF4003E3E05 /* AppDelegate.swift in Sources */,
+				FD2084A0239ED3D200D7A773 /* Background.swift in Sources */,
 				FD4BF45E239555B60055DF61 /* Player.swift in Sources */,
 				FDEBF54F2389A808003E3E05 /* BoulderNode.swift in Sources */,
 				FD3B644F239ABF16001240CB /* Pickup.swift in Sources */,

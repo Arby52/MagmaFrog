@@ -330,12 +330,8 @@ class GameScene: SKScene{
     
     func SpawnStartingBG( currentBlocks: inout Int) ->Int{
         for _ in 0...2{
-            let bg = SKSpriteNode(imageNamed: "safebg")
-            bg.name = "spawnbg"
-            bg.position.x = 0
-            bg.zPosition = 0
-            bg.size.width = frame.width
-            bg.position.y = CGFloat((frame.minY + 32) + CGFloat(currentBlocks*64))
+            let bg = Background(texName: "safebg", objName: "spawnbg")
+            bg.position = CGPoint(x:0, y: CGFloat((frame.minY + 32) + CGFloat(currentBlocks*64)))
             addChild(bg)
             currentBlocks+=1
         }
@@ -346,12 +342,8 @@ class GameScene: SKScene{
     func SpawnSafeBG(currentBlocks: inout Int) -> Int{
         let blockAmount = Int.random(in: 2...2)
         for _ in 1...blockAmount{
-            let bg = SKSpriteNode(imageNamed: "safebg")
-            bg.name = "safebg"
-            bg.position.x = 0
-            bg.size.width = frame.width
-            bg.zPosition = 0
-            bg.position.y = CGFloat((frame.minY + 32) + CGFloat(currentBlocks*64))
+            let bg = Background(texName: "safebg", objName: "safebg")
+            bg.position = CGPoint(x:0, y: CGFloat((frame.minY + 32) + CGFloat(currentBlocks*64)))
             addChild(bg)
             SpawnPickup(yPos: Int(bg.position.y))
             currentBlocks+=1
@@ -363,18 +355,8 @@ class GameScene: SKScene{
     func SpawnMagmaBG(currentBlocks: inout Int) -> Int{
         let blockAmount = Int.random(in: 2...4)
         for _ in 1...blockAmount{
-            let bg = SKSpriteNode(imageNamed: "magmabg")
-            bg.name = "magmabg"
-            bg.position.x = 0
-            bg.zPosition = 0
-            bg.size.width = frame.width
-            bg.position.y = CGFloat((frame.minY + 32) + CGFloat(currentBlocks*64))
-            
-            bg.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 750, height: 64))
-            bg.physicsBody?.categoryBitMask = CollisionType.magma.rawValue
-            bg.physicsBody?.contactTestBitMask = CollisionType.player.rawValue
-            bg.physicsBody?.isDynamic = false
-            
+            let bg = Background(texName: "magmabg", objName: "magmabg")
+            bg.position = CGPoint(x:0, y: CGFloat((frame.minY + 32) + CGFloat(currentBlocks*64)))
             addChild(bg)
             
             SpawnPickup(yPos: Int(bg.position.y))
@@ -398,9 +380,8 @@ class GameScene: SKScene{
                 var fillSpawnPoint = (frame.minX - CGFloat(xOffset))
                 repeat{
                     let magmaFloat = MagmaFloat(startPosition: CGPoint(x: CGFloat(fillSpawnPoint), y: CGFloat( bg.position.y)), movSpeed: CGFloat(speed), direction: floatDirection)
-
-                   addChild(magmaFloat)
-                   fillSpawnPoint += (CGFloat(timer) * CGFloat(speed))
+                    addChild(magmaFloat)
+                    fillSpawnPoint += (CGFloat(timer) * CGFloat(speed))
                 } while fillSpawnPoint <= frame.maxX
             }
 
@@ -428,12 +409,8 @@ class GameScene: SKScene{
     func SpawnBoulderBG(currentBlocks: inout Int) ->Int{
         let blockAmount = Int.random(in: 2...4)
         for _ in 1...blockAmount{
-            let bg = SKSpriteNode(imageNamed: "rockbg")
-            bg.name = "rockbg"
-            bg.position.x = 0
-            bg.zPosition = 0
-            bg.size.width = frame.width
-            bg.position.y = CGFloat((frame.minY + 32) + CGFloat(currentBlocks*64))
+            let bg = Background(texName: "rockbg", objName: "rockbg")
+            bg.position = CGPoint(x:0, y: CGFloat((frame.minY + 32) + CGFloat(currentBlocks*64)))
             addChild(bg)
             
             SpawnPickup(yPos: Int(bg.position.y))
