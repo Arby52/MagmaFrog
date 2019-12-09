@@ -117,11 +117,11 @@ class GameScene: SKScene{
                 guard let data = data, error == nil else{
                     return
                 }
-                if (data.userAcceleration.z < -2.5 && self!.remainingShockwaves > 0 && !(self!.shockwaveBool)){
+                if (data.userAcceleration.z < -2 && self!.remainingShockwaves > 0 && !(self!.shockwaveBool)){
                     self!.Shockwave()
                     self!.shockwaveBool = true
                 }
-                if(data.userAcceleration.z > -2 && self!.shockwaveBool){
+                if(data.userAcceleration.z > -1.5 && self!.shockwaveBool){
                     self!.shockwaveBool = false
                 }
             }
@@ -136,22 +136,24 @@ class GameScene: SKScene{
             player.position.x = (currentPlatform?.position.x)!
         }
         
+        //go off left screen
+        if(player.position.x - player.size.width/2 < frame.minX){
+            player.removeFromParent()
+            isPlayerAlive = false
+            GameOver()
+        }
+        //go off right screen
+        if(player.position.x + player.size.width/2 > frame.maxX){
+            player.removeFromParent()
+            isPlayerAlive = false
+            GameOver()
+        }
         
         if(onLava && !onPlatform && (currentPlatform == nil) && isPlayerAlive){
             player.removeFromParent()
             isPlayerAlive = false
             GameOver()
         }
-        
-        /* ////////uhhhh, make it so they have to come on screen once before can be deleted :] mayB with boolean
-        for child in children{ //Destroy objets off screen
-            if child.frame.maxX < 0 {
-                if !frame.intersects(child.frame){
-                    child.removeFromParent()
-                }
-            }
-        }
-         */
     }
     
     @objc func swipeHandler(_ sender : UISwipeGestureRecognizer){
@@ -179,13 +181,13 @@ class GameScene: SKScene{
                         
                     case .left:
                         //If not at boundary, move frog
-                        if !(Int(floor(player.position.x)) < -310){
+                        if !(Int(floor(player.position.x - player.size.width/2) - moveStep) < Int(frame.minX)){
                             player.position.x -= moveStep
                         }
                         break
                         
                     case .right:
-                        if !(Int(floor(player.position.x)) > 310){
+                        if !(Int(floor(player.position.x + player.size.width/2) + moveStep) > Int(frame.maxX)){
                             player.position.x += moveStep
                         }
                         break
@@ -331,6 +333,7 @@ class GameScene: SKScene{
             bg.name = "spawnbg"
             bg.position.x = 0
             bg.zPosition = 0
+            bg.size.width = frame.width
             bg.position.y = CGFloat((frame.minY + 32) + CGFloat(currentBlocks*64))
             addChild(bg)
             currentBlocks+=1
@@ -345,6 +348,7 @@ class GameScene: SKScene{
             let bg = SKSpriteNode(imageNamed: "safebg")
             bg.name = "safebg"
             bg.position.x = 0
+            bg.size.width = frame.width
             bg.zPosition = 0
             bg.position.y = CGFloat((frame.minY + 32) + CGFloat(currentBlocks*64))
             addChild(bg)
@@ -362,6 +366,7 @@ class GameScene: SKScene{
             bg.name = "magmabg"
             bg.position.x = 0
             bg.zPosition = 0
+            bg.size.width = frame.width
             bg.position.y = CGFloat((frame.minY + 32) + CGFloat(currentBlocks*64))
             
             bg.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 750, height: 64))
@@ -376,7 +381,7 @@ class GameScene: SKScene{
             //Spawning Magma Floats
             let xOffset = Int.random(in: 0 ... 250)
             let timer = Double.random(in: 2.5 ... 4)
-            let speed = 100
+            let speed = Int.random(in: 65 ... 200)
 
             //spawn magmaFloats in on the screen so they're in place on spawn
             if(floatDirection == Direction.left){
@@ -426,6 +431,7 @@ class GameScene: SKScene{
             bg.name = "rockbg"
             bg.position.x = 0
             bg.zPosition = 0
+            bg.size.width = frame.width
             bg.position.y = CGFloat((frame.minY + 32) + CGFloat(currentBlocks*64))
             addChild(bg)
             
@@ -572,7 +578,9 @@ extension GameScene: SKPhysicsContactDelegate{
         
         //Player and Shockwave Pickup
         if(Obj.name == "pickup"){
-            remainingShockwaves += 1
+            if(remainingShockwaves <= 2){ //cap at 3
+                remainingShockwaves += 1
+            }
             destroy(object: Obj)
         }
     }
