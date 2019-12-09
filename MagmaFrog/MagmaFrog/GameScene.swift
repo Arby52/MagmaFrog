@@ -43,6 +43,7 @@ class GameScene: SKScene{
     let player = Player()
     
     var shockwaveBool = false
+    var invalidateTimers = false
 
     
     //Motion Manager
@@ -72,6 +73,8 @@ class GameScene: SKScene{
             highscoreLabel.text = "Highscore: \(highscore)"
         }
     }
+    
+    var resetButton: ResetButton? = nil
     
     //spawn starting background
     let bpositions = Array(stride(from: -384, to: 384, by: 128))
@@ -124,37 +127,7 @@ class GameScene: SKScene{
             }
         }
         
-        
-        
-        //Spawn Objects
-        player.position = CGPoint(x: 0, y: frame.minY+96)
-        addChild(player)
-        
-        //Spawn Starting Background
-        currentBlocks = SpawnStartingBG(currentBlocks: &currentBlocks)
-        currentBlocks = SpawnBackgrounds(currentBlocks: &currentBlocks)
-        
-        //score aligning
-        scoreLabel = SKLabelNode(fontNamed: "ArialRoundedMTBold")
-        scoreLabel.text = "Score: 0"
-        scoreLabel.horizontalAlignmentMode = .left
-        scoreLabel.position = CGPoint(x:frame.minX + 50, y:frame.maxY - 50)
-        scoreLabel.fontSize = 40
-        scoreLabel.zPosition = 10
-        addChild(scoreLabel)
-        
-        //Shockwave aligning
-        shockwaveLabel = SKLabelNode(fontNamed: "ArialRoundedMTBold")
-        shockwaveLabel.text = "Shockwaves: 3"
-        shockwaveLabel.horizontalAlignmentMode = .right
-        shockwaveLabel.position = CGPoint(x:frame.maxX - 50, y:frame.maxY - 50)
-        shockwaveLabel.fontSize = 40
-        shockwaveLabel.zPosition = 10
-        addChild(shockwaveLabel)
-    }
-      
-    func HandleShaking(){
-        
+        SpawnEverything()
     }
         
     //Update and Input functions
@@ -249,7 +222,6 @@ class GameScene: SKScene{
         }
         
         //Create highscore label
-        print("here")
         highscoreLabel = SKLabelNode(fontNamed: "ArialRoundedMTBold")
         highscoreLabel.text = "Highscore: \(defaults.integer(forKey: "Score"))"
         highscoreLabel.horizontalAlignmentMode = .center
@@ -257,19 +229,59 @@ class GameScene: SKScene{
         highscoreLabel.fontSize = 60
         highscoreLabel.zPosition = 10
         addChild(highscoreLabel)
-        print("here 2")
         
         //Create reset button
-        let button: ResetButton = ResetButton(defaultButtonImage: "resetButton", activeButtonImage: "resetButtonDown", buttonAction: resetToOriginalState)
-        button.position = CGPoint(x:0, y:0)
-        button.zPosition = 10
-        addChild(button)
+        resetButton = ResetButton(defaultButtonImage: "resetButton", activeButtonImage: "resetButtonDown", buttonAction: restartGame)
+        
+        resetButton!.position = CGPoint(x:0, y:0)
+        resetButton!.zPosition = 10
+        addChild(resetButton!)
     }
     
-    func resetToOriginalState(){
-        let newScene = GameScene(size: self.size)
-        let animation = SKTransition.fade(withDuration: 1.0)
-        self.view?.presentScene(newScene, transition: animation)
+    func restartGame(){
+        if let view = self.view as! SKView? {
+            // Load the SKScene from 'GameScene.sks'
+            if let scene = SKScene(fileNamed: "GameScene") {
+                // Set the scale mode to scale to fit the window
+                scene.scaleMode = .aspectFill
+                
+                // Present the scene
+                view.presentScene(scene)
+            }
+            
+            view.ignoresSiblingOrder = true
+
+        }
+    }
+    
+    func SpawnEverything(){
+        //Spawn Objects
+        player.position = CGPoint(x: 0, y: frame.minY+96)
+        addChild(player)
+        
+        //Spawn Starting Background
+        currentBlocks = 0
+        invalidateTimers = false
+        currentBlocks = SpawnStartingBG(currentBlocks: &currentBlocks)
+        currentBlocks = SpawnBackgrounds(currentBlocks: &currentBlocks)
+        
+        //score aligning
+        scoreLabel = SKLabelNode(fontNamed: "ArialRoundedMTBold")
+        scoreLabel.text = "Score: 0"
+        scoreLabel.horizontalAlignmentMode = .left
+        scoreLabel.position = CGPoint(x:frame.minX + 50, y:frame.maxY - 50)
+        scoreLabel.fontSize = 40
+        scoreLabel.zPosition = 10
+        addChild(scoreLabel)
+        
+        //Shockwave aligning
+        shockwaveLabel = SKLabelNode(fontNamed: "ArialRoundedMTBold")
+        shockwaveLabel.text = "Shockwaves: 3"
+        shockwaveLabel.horizontalAlignmentMode = .right
+        shockwaveLabel.position = CGPoint(x:frame.maxX - 50, y:frame.maxY - 50)
+        shockwaveLabel.fontSize = 40
+        shockwaveLabel.zPosition = 10
+        addChild(shockwaveLabel)
     }
     
     //Background spawning functions
@@ -389,8 +401,12 @@ class GameScene: SKScene{
             let tempDirection = floatDirection
             
             //Spawn on timer
-            Timer.scheduledTimer(withTimeInterval: timer, repeats: true) {_ in
-                self.SpawnMagmaFloat(floatStartY: Int(bg.position.y), xOffset: xOffset, speed: speed, direction: tempDirection)
+            Timer.scheduledTimer(withTimeInterval: timer, repeats: true) {timer in
+                if (self.invalidateTimers){
+                    timer.invalidate()
+                } else {
+                    self.SpawnMagmaFloat(floatStartY: Int(bg.position.y), xOffset: xOffset, speed: speed, direction: tempDirection)
+                }
             }
             if(floatDirection == Direction.left){
                 floatDirection = Direction.right
@@ -450,8 +466,12 @@ class GameScene: SKScene{
             
             
             //Spawn on timer
-            Timer.scheduledTimer(withTimeInterval: timer, repeats: true) {_ in
-                self.SpawnBoulder(boulderStartY: Int(bg.position.y), xOffset: xOffset, speed: speed, direction: direction)
+            Timer.scheduledTimer(withTimeInterval: timer, repeats: true) {timer in
+                if (self.invalidateTimers){
+                    timer.invalidate()
+                } else {
+                    self.SpawnBoulder(boulderStartY: Int(bg.position.y), xOffset: xOffset, speed: speed, direction: direction)
+                }
             }
                             
             currentBlocks+=1
@@ -500,13 +520,11 @@ class GameScene: SKScene{
     
     func OnLava(){
         onLava = true
-         print("magma \(onLava)")
     }
     
     func OnPlatform(Obj: SKNode){
         onPlatform = true
         currentPlatform = Obj
-        print("platform \(onPlatform)")
     }
     
     
@@ -554,7 +572,6 @@ extension GameScene: SKPhysicsContactDelegate{
         
         //Player and Shockwave Pickup
         if(Obj.name == "pickup"){
-            print("pickup collide")
             remainingShockwaves += 1
             destroy(object: Obj)
         }
@@ -576,13 +593,11 @@ extension GameScene: SKPhysicsContactDelegate{
     func endedCollision(Player: SKNode, Obj: SKNode){
         if(Obj.name == "magmabg"){
             onLava = false
-            print("magma \(onLava)")
         }
         
         if (Obj.name == "magmafloat"){
             onPlatform = false
             currentPlatform = nil
-            print("platform \(onPlatform)")
         }
     }
     

@@ -16,8 +16,6 @@ class GameViewController: UIViewController {
         super.viewDidLoad()
       //  self.becomeFirstResponder()
         
-        //Initializing Core Motion
-        
         if let view = self.view as! SKView? {
             // Load the SKScene from 'GameScene.sks'
             if let scene = SKScene(fileNamed: "GameScene") {
