@@ -48,9 +48,12 @@ class GameScene: SKScene{
     //Motion Manager
     let motionManager = CMMotionManager()
     
+    //Userdefaults saving
+    let defaults = UserDefaults.standard
     
+    //Labels
     var scoreLabel: SKLabelNode!
-    var score = 0{
+    var score: Int = 0{
         didSet{
             scoreLabel.text = "Score: \(score)"
         }
@@ -63,12 +66,20 @@ class GameScene: SKScene{
         }
     }
     
+    var highscoreLabel: SKLabelNode!
+    var highscore: Int = 0{
+        didSet{
+            highscoreLabel.text = "Highscore: \(highscore)"
+        }
+    }
+    
     //spawn starting background
     let bpositions = Array(stride(from: -384, to: 384, by: 128))
     var currentBlocks: Int = 0
     let neededBlocks: Int = 24
     var prevBG: BackgroundTypes = BackgroundTypes.safe
     
+
     
     
     override func didMove(to view: SKView) {
@@ -153,9 +164,10 @@ class GameScene: SKScene{
         }
         
         
-        if(onLava && !onPlatform && (currentPlatform == nil)){
+        if(onLava && !onPlatform && (currentPlatform == nil) && isPlayerAlive){
             player.removeFromParent()
             isPlayerAlive = false
+            GameOver()
         }
         
         /* ////////uhhhh, make it so they have to come on screen once before can be deleted :] mayB with boolean
@@ -225,6 +237,39 @@ class GameScene: SKScene{
             }
         }
         remainingShockwaves -= 1
+    }
+    
+    func GameOver(){
+        scoreLabel.removeFromParent()
+        shockwaveLabel.removeFromParent()
+        
+        //If current score is bigger than saved score, replace saved score
+        if(score > defaults.integer(forKey: "Score")){ //If Score has not been added yet, it returns 0.
+            defaults.set(score, forKey: "Score")
+        }
+        
+        //Create highscore label
+        print("here")
+        highscoreLabel = SKLabelNode(fontNamed: "ArialRoundedMTBold")
+        highscoreLabel.text = "Highscore: \(defaults.integer(forKey: "Score"))"
+        highscoreLabel.horizontalAlignmentMode = .center
+        highscoreLabel.position = CGPoint(x:0, y:150)
+        highscoreLabel.fontSize = 60
+        highscoreLabel.zPosition = 10
+        addChild(highscoreLabel)
+        print("here 2")
+        
+        //Create reset button
+        let button: ResetButton = ResetButton(defaultButtonImage: "resetButton", activeButtonImage: "resetButtonDown", buttonAction: resetToOriginalState)
+        button.position = CGPoint(x:0, y:0)
+        button.zPosition = 10
+        addChild(button)
+    }
+    
+    func resetToOriginalState(){
+        let newScene = GameScene(size: self.size)
+        let animation = SKTransition.fade(withDuration: 1.0)
+        self.view?.presentScene(newScene, transition: animation)
     }
     
     //Background spawning functions
@@ -371,20 +416,42 @@ class GameScene: SKScene{
             SpawnPickup(yPos: Int(bg.position.y))
             
             let xOffset = Int.random(in: 0 ... 500)
-            let timer = Double.random(in: 3 ... 5)
-            let speed = Int.random(in: 70 ... 150)
+            let timer = Double.random(in: 1.5 ... 4)
+            let speed = Int.random(in: 50 ... 350)
+            let dirInt = Int.random(in: 1 ... 2) //do not change
+            var direction: Direction
+            if (dirInt == 1){
+                direction = Direction.left
+            } else {
+                direction = Direction.right
+            }
             
             //spawn boulders in on the screen so they're in place on spawn
-            var fillSpawnPoint = (frame.maxX + CGFloat(xOffset))
-            repeat{
-                let boulder = BoulderNode(startPosition: CGPoint(x: CGFloat(fillSpawnPoint), y: CGFloat( bg.position.y)), movSpeed: CGFloat(speed))
-                addChild(boulder)
-                fillSpawnPoint -= (CGFloat(timer) * CGFloat(speed))
-            } while fillSpawnPoint >= frame.minX
+            
+            
+            if(floatDirection == Direction.left){
+                var fillSpawnPoint = (frame.maxX + CGFloat(xOffset))
+                repeat{
+                    let boulder = BoulderNode(startPosition: CGPoint(x: CGFloat(fillSpawnPoint), y: CGFloat( bg.position.y)), movSpeed: CGFloat(speed), direction: direction)
+                    addChild(boulder)
+                    fillSpawnPoint -= (CGFloat(timer) * CGFloat(speed))
+                } while fillSpawnPoint >= frame.minX
+            }
+            else{
+                var fillSpawnPoint = (frame.minX - CGFloat(xOffset))
+                repeat{
+                    let boulder = BoulderNode(startPosition: CGPoint(x: CGFloat(fillSpawnPoint), y: CGFloat( bg.position.y)), movSpeed: CGFloat(speed), direction: direction)
+                    addChild(boulder)
+                   fillSpawnPoint += (CGFloat(timer) * CGFloat(speed))
+                } while fillSpawnPoint <= frame.maxX
+            }
+            
+            
+            
             
             //Spawn on timer
             Timer.scheduledTimer(withTimeInterval: timer, repeats: true) {_ in
-                self.SpawnBoulder(boulderStartY: Int(bg.position.y), xOffset: xOffset, speed: speed)
+                self.SpawnBoulder(boulderStartY: Int(bg.position.y), xOffset: xOffset, speed: speed, direction: direction)
             }
                             
             currentBlocks+=1
@@ -417,11 +484,17 @@ class GameScene: SKScene{
         addChild(magmaFloat)
     }
     
-    func SpawnBoulder(boulderStartY: Int, xOffset: Int, speed: Int){
+    func SpawnBoulder(boulderStartY: Int, xOffset: Int, speed: Int, direction: Direction){
         
         let boulderStartY = boulderStartY
-        let boulderStartX = frame.maxX + CGFloat(xOffset)
-        let boulder = BoulderNode(startPosition: CGPoint(x: CGFloat(boulderStartX), y: CGFloat( boulderStartY)), movSpeed: CGFloat(speed))
+        var boulderStartX = frame.maxX + CGFloat(xOffset)
+        if (direction == Direction.left){
+            boulderStartX = frame.maxX + CGFloat(xOffset)
+        } else {
+            boulderStartX = frame.minX - CGFloat(xOffset)
+        }
+        
+        let boulder = BoulderNode(startPosition: CGPoint(x: CGFloat(boulderStartX), y: CGFloat( boulderStartY)), movSpeed: CGFloat(speed), direction: direction)
         addChild(boulder)
     }
     
@@ -435,6 +508,8 @@ class GameScene: SKScene{
         currentPlatform = Obj
         print("platform \(onPlatform)")
     }
+    
+    
 }
 
 
@@ -512,6 +587,9 @@ extension GameScene: SKPhysicsContactDelegate{
     }
     
     func destroy(object: SKNode){
+        if(object.name == "player"){
+            GameOver()
+        }
         object.removeFromParent()
     }
     

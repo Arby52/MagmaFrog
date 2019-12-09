@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		FD3B644F239ABF16001240CB /* Pickup.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3B644E239ABF16001240CB /* Pickup.swift */; };
+		FD42D458239EAD8F0063E35D /* ResetButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD42D457239EAD8F0063E35D /* ResetButton.swift */; };
 		FD4BF45E239555B60055DF61 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD4BF45D239555B60055DF61 /* Player.swift */; };
 		FD4BF460239558D50055DF61 /* MagmaFloat.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD4BF45F239558D50055DF61 /* MagmaFloat.swift */; };
 		FDEBF53723899BF4003E3E05 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDEBF53623899BF4003E3E05 /* AppDelegate.swift */; };
@@ -22,6 +23,7 @@
 
 /* Begin PBXFileReference section */
 		FD3B644E239ABF16001240CB /* Pickup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pickup.swift; sourceTree = "<group>"; };
+		FD42D457239EAD8F0063E35D /* ResetButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetButton.swift; sourceTree = "<group>"; };
 		FD4BF45D239555B60055DF61 /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		FD4BF45F239558D50055DF61 /* MagmaFloat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagmaFloat.swift; sourceTree = "<group>"; };
 		FDEBF53323899BF4003E3E05 /* MagmaFrog.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MagmaFrog.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -69,6 +71,7 @@
 				FDEBF53623899BF4003E3E05 /* AppDelegate.swift */,
 				FDEBF53823899BF4003E3E05 /* GameScene.sks */,
 				FDEBF53C23899BF4003E3E05 /* GameScene.swift */,
+				FD42D457239EAD8F0063E35D /* ResetButton.swift */,
 				FD3B644E239ABF16001240CB /* Pickup.swift */,
 				FD4BF45F239558D50055DF61 /* MagmaFloat.swift */,
 				FDEBF54E2389A808003E3E05 /* BoulderNode.swift */,
@@ -157,6 +160,7 @@
 				FDEBF53D23899BF4003E3E05 /* GameScene.swift in Sources */,
 				FDEBF53F23899BF4003E3E05 /* GameViewController.swift in Sources */,
 				FD4BF460239558D50055DF61 /* MagmaFloat.swift in Sources */,
+				FD42D458239EAD8F0063E35D /* ResetButton.swift in Sources */,
 				FDEBF53723899BF4003E3E05 /* AppDelegate.swift in Sources */,
 				FD4BF45E239555B60055DF61 /* Player.swift in Sources */,
 				FDEBF54F2389A808003E3E05 /* BoulderNode.swift in Sources */,
